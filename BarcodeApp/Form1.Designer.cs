@@ -36,6 +36,8 @@
             label3 = new Label();
             label4 = new Label();
             cmbModule = new ComboBox();
+            btnExportIMG = new Button();
+            btnExportPDF = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBoxBarcode).BeginInit();
             SuspendLayout();
             // 
@@ -107,11 +109,33 @@
             cmbModule.Size = new Size(163, 23);
             cmbModule.TabIndex = 10;
             // 
+            // btnExportIMG
+            // 
+            btnExportIMG.Location = new Point(580, 119);
+            btnExportIMG.Name = "btnExportIMG";
+            btnExportIMG.Size = new Size(120, 23);
+            btnExportIMG.TabIndex = 11;
+            btnExportIMG.Text = "export image";
+            btnExportIMG.UseVisualStyleBackColor = true;
+            btnExportIMG.Click += btnExportIMG_Click;
+            // 
+            // btnExportPDF
+            // 
+            btnExportPDF.Location = new Point(580, 160);
+            btnExportPDF.Name = "btnExportPDF";
+            btnExportPDF.Size = new Size(75, 23);
+            btnExportPDF.TabIndex = 12;
+            btnExportPDF.Text = "export pdf";
+            btnExportPDF.UseVisualStyleBackColor = true;
+            btnExportPDF.Click += btnExportPDF_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(985, 623);
+            Controls.Add(btnExportPDF);
+            Controls.Add(btnExportIMG);
             Controls.Add(cmbModule);
             Controls.Add(label4);
             Controls.Add(label3);
@@ -138,5 +162,7 @@
         private Label label3;
         private Label label4;
         private ComboBox cmbModule;
+        private Button btnExportIMG;
+        private Button btnExportPDF;
     }
 }

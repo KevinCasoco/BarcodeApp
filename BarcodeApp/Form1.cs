@@ -130,5 +130,49 @@ namespace BarcodeApp
                 MessageBox.Show("Error generating barcode: " + ex.Message);
             }
         }
+
+        private void btnExportIMG_Click(object sender, EventArgs e)
+        {
+            if (pictureBoxBarcode.Image == null)
+            {
+                MessageBox.Show("Please generate a barcode first.",
+                    "No Image",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "PNG Image|*.png|JPEG Image|*.jpg|Bitmap Image|*.bmp";
+                sfd.Title = "Save Barcode Image";
+                sfd.FileName = "barcode.png";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        // Save the image in the selected format
+                        var format = System.Drawing.Imaging.ImageFormat.Png;
+                        if (sfd.FileName.EndsWith(".jpg"))
+                            format = System.Drawing.Imaging.ImageFormat.Jpeg;
+                        else if (sfd.FileName.EndsWith(".bmp"))
+                            format = System.Drawing.Imaging.ImageFormat.Bmp;
+
+                        pictureBoxBarcode.Image.Save(sfd.FileName, format);
+                        MessageBox.Show("Barcode saved successfully!", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error saving barcode: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void btnExportPDF_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
