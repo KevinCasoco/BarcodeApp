@@ -8,6 +8,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.IO.Image;
+using System.IO;
 
 namespace BarcodeApp
 {
@@ -23,6 +28,7 @@ namespace BarcodeApp
 
         }
 
+        // generate barcode
         private void btnGenerate_Click(object sender, EventArgs e)
         {
             const string DI = "DI";
@@ -60,7 +66,7 @@ namespace BarcodeApp
                 barcode.IncludeLabel = false; // remove default text
                 barcode.Alignment = AlignmentPositions.CENTER;
 
-                Image barcodeImage =
+                System.Drawing.Image barcodeImage =
                     barcode.Encode(TYPE.EAN13, ean13, Color.Black, Color.White, 500, 180);
 
                 Bitmap finalImage =
@@ -131,6 +137,7 @@ namespace BarcodeApp
             }
         }
 
+        // export image
         private void btnExportIMG_Click(object sender, EventArgs e)
         {
             if (pictureBoxBarcode.Image == null)
@@ -170,9 +177,73 @@ namespace BarcodeApp
             }
         }
 
+        // generate pdf
         private void btnExportPDF_Click(object sender, EventArgs e)
         {
+            ExportBarcodeToPDF(pictureBoxBarcode);
+        }
 
+        // export pdf
+        private void ExportBarcodeToPDF(PictureBox pictureBox)
+        {
+            if (pictureBox.Image == null)
+            {
+                MessageBox.Show("Please generate a barcode first.", "No Image",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "PDF File|*.pdf";
+                sfd.Title = "Save Barcode as PDF";
+                sfd.FileName = "barcode.pdf";
+
+                if (sfd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                try
+                {
+                    // Clone the image to avoid GDI + lock issues
+                    using (Bitmap bmp = new Bitmap(pictureBox.Image))
+                    {
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            byte[] imgBytes = ms.ToArray();
+
+                            // initiate PDF
+                            using (PdfWriter writer = new PdfWriter(sfd.FileName))
+                            {
+                                using (PdfDocument pdf = new PdfDocument(writer))
+                                {
+                                    pdf.SetDefaultPageSize(iText.Kernel.Geom.PageSize.A4);
+
+                                    using (Document doc = new Document(pdf))
+                                    {
+                                        var imageData = ImageDataFactory.Create(imgBytes);
+                                        var pdfImg = new iText.Layout.Element.Image(imageData);
+
+                                        pdfImg.SetAutoScale(true);
+                                        pdfImg.SetHorizontalAlignment(
+                                            iText.Layout.Properties.HorizontalAlignment.CENTER);
+
+                                        doc.Add(pdfImg);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    MessageBox.Show("Barcode saved as PDF successfully!", "Saved",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Full Error: " + ex.ToString(), "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

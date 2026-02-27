@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="itext.bouncy-castle-adapter" Version="9.5.0" />
+    <PackageReference Include="itext7" Version="9.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="BarcodeStandard">
       <HintPath>libs\BarcodeStandard.dll</HintPath>
     </Reference>
